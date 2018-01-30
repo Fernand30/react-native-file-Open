@@ -55,13 +55,12 @@ export default class App extends Component<{}> {
     this.eventEmitter.removeListener();
   }
 
-  handlePress = (url) => {
+  handlePress = () => {
    if(Platform.OS === 'ios'){
-      url = url.replace('file://', '')
+      //IOS
       OpenFile.openDoc([{
-        url:url,
-        fileNameOptional:"sample-test",
-        fileType:"JPEG"
+        url:"https://www.cmu.edu/blackboard/files/evaluate/tests-example.xls",
+        fileNameOptional:"sample-test"
       }], (error, url) => {
          if (error) {
            console.error(error);
@@ -146,7 +145,7 @@ export default class App extends Component<{}> {
   _pickImage() {
       ImagePicker.launchImageLibrary({}, response  => {
         //alert(response.uri)
-         this.handlePress(response.uri) 
+         this.handlePressb64(response.uri) 
       })
     }
  
@@ -156,35 +155,33 @@ export default class App extends Component<{}> {
   * fileType Default == "" you can use it, to set the File Extension (pdf,doc,xls,ppt etc) when in the Url you dont have an File Extensions
   */
   handlePressb64 = (url) => {
-    //const uploadUri = Platform.OS === 'ios' ? uri.replace('file://', '') : uri
     if(Platform.OS === 'ios'){
       url = url.replace('file://', '')
-      alert(url)
-      OpenFile.openDocb64([{
-        base64:"{BASE64String}",
-        fileName:url,
-        fileType:"jpg"
+      OpenFile.openDoc([{
+        url:url,
+        fileNameOptional:"sample-test",
+        fileType:"JPEG"
       }], (error, url) => {
-          if (error) {
-            console.error(error);
-          } else {
-            console.log(url)
-          }
-        })
+         if (error) {
+           console.error(error);
+         } else {
+           console.log(url)
+         }
+       })
     }else{
       //Android
-      OpenFile.openDocb64([{
-        base64:"{BASE64String}",
+      OpenFile.openDoc([{
+        url:"http://mail.hartl-haus.at/uploads/tx_hhhouses/htf13_classic153s(3_giebel_haus).jpg", // Local "file://" + filepath
         fileName:"sample",
-        fileType:"png",
-        cache:true /*Use Cache Folder Android*/
+        cache:false,
+        fileType:"jpg"
       }], (error, url) => {
-          if (error) {
-            console.error(error);
-          } else {
-            console.log(url)
-          }
-        })
+         if (error) {
+           console.error(error);
+         } else {
+           console.log(url)
+         }
+       })
     }
   }
 
@@ -210,7 +207,7 @@ export default class App extends Component<{}> {
     return (
       <View style={styles.container}>
         <Button
-          onPress={this._pickImage.bind(this)}
+          onPress={this.handlePress.bind(this)}
           title="Press Me Open Doc Url"
           accessibilityLabel="See a Document"
         />
